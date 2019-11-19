@@ -1,0 +1,28 @@
+#Besprechung Projektplanung am 13.11.2019
+##Für Präsentation:
+### Welche Art von Stroop-Task wird umgesetzt?
+    * Emotional Stroop Task
+### Welche Experimentellen Bedingungen kommen vor?
+    * IV 1: neutrale vs negativ konnotierte Wörter
+### Welches Material wird dazu verwendet (Texte, Bilder etc.)?
+    * drei Farben (blau, grün, lila), anzuzeigen via Tastatur
+    * neutrale und negativ konnotierte Substantive (von ähnlicher Länge)
+    * Auf Listen/Dictionaries normierte emotionale Stimuli (senticnet, wordnet) zurückggreifen
+### Details der Durchführung (Anzahl Trials, Reihenfolge etc.)
+    * Pre-Test: Funktionalität etc. testen
+    * 30 Personen, nur Verwendung der Schreibhand
+    * Testläufe: 6 Stück -> evtl. Schleife, falls 2 oder mehr Fehler
+    * 26 Trials, Reihenfolge: random
+### Hypothesen
+    * Bei negativ konnotierten Wörtern kommt es zu einer längeren Reaktionszeit
+### Geplante Umsetzung (PsychoPy oder JsPsych? Online oder offline?)
+    * Offline, alle Versuchspersonen am selben PC
+    * JsPsych
+    * Github (Bene richtet ein)
+### Geplante Rekrutierung (wie kommen Sie zu Ihren Versuchspersonen?)
+    * Aus dem persönlichen Umfeld
+    * keine Farberkennungsschwäche
+    * Egal ob Rechts- oder Linkshänder
+### Wortsammlung
+    * Neutral: Papier, Haus, Anker, Stuhl, Fahrzeug, Pflanze, Stein, Lampe, Schrank, Tür, Straße, Stadt, Flasche, Schal, Schuhe, Fenster, Hamster, Boden, Uhr, Decke, Nudelsieb, Schüssel, Holz, Sieb, Schlüssel, Tacker
+    * Negativ: Mord, Krieg, Tod, Grab, Schulden, Stress, Ekel, Prüfung, Diebstahl, Zerstörung, Kälte, Hungersnot, Panik, Hunger, Waffe, Bombe, Krankheit, Seuche, Ebola, Mensa
