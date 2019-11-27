@@ -18,7 +18,6 @@ var word = [
         ‚Schal',
         ‚Schuhe',
         ‚Fenster‘,
-
         'Mord', 
         ‚Krieg',
         ‚Tod',
