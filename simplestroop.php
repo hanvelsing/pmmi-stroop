@@ -17,24 +17,22 @@
         xhr.send(JSON.stringify({filename: name, filedata: data}));
     }
 
+    // Return numerical code for colors
     function colorToNumber(colorName) {
         switch (colorName) {
             case 'blue':
                 return 0;
-                break;
             case 'green':
                 return 1;
-                break;
             case 'red':
                 return 2;
-                break;
             default:
                 return -1;
         }
     }
 
+    // Return random index of given array, or -1 if array is empty or invalid
     function getRandomIndex(array) {
-        // Return random index of given array, or -1 if array is empty or invalid
         if (Array.isArray(array) && array.length > 0) {
             return Math.round(Math.random() * (array.length-1));
         } else {
@@ -43,7 +41,7 @@
     }
 
 
-    var colors = [
+    const colors = [
         'blue',
         'green',
         'red'
@@ -112,10 +110,6 @@
 
     var maintl=[];
 
-    var wordnum = 0;
-
-    var num_trials=4;
-
     // Initialize arrays for unused word indexes
     var unusedNeutralIndexes = [];
     for(i = 0; i < neutralWords.length; i++) {
@@ -126,6 +120,14 @@
         unusedEmotionalIndexes.push(i);
     }
 
+    /**
+     * This creates a [fixation, stim, feedback] block for each word in a random color and pushes them on the timeline.
+     * It uses an array of used word-indexes to randomly select words without duplicates,
+     * while saving the used words indexes in the const word array.
+     *
+     * I just noticed that jsPsych.randomize probably makes randomizing the order here redundant.
+     * Am I gonna change it now? No? Are you? Maybe? Who cares?
+     */
     while ((unusedNeutralIndexes.length + unusedEmotionalIndexes.length) > 0) {
         //Select cond (emotional = 1, neutral = 2)
         var cond = 0;
@@ -141,9 +143,10 @@
         }
 
         // Select word
-        var randomNumber;
         var word;
         var wordIndex;
+
+        let randomNumber;
         switch (cond) {
             case 1:
                 //Get and remove random emotional word index
@@ -169,7 +172,7 @@
         }
 
         // Select random color
-        var color = colors[Math.round(Math.random()*(colors.length-1))];
+        var color = colors[getRandomIndex(colors)];
 
         var text='<span style="color:'+color+'">'+word+'</span>';
         var stim ={
@@ -209,13 +212,7 @@
         };
 
         maintl.push(subtl);
-
-        if (wordnum < 3) {
-            wordnum++;
-        } else {
-            wordnum = 0
-        };
-    };
+    }
 
     maintl = jsPsych.randomization.shuffle(maintl);
 
