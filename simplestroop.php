@@ -19,16 +19,7 @@
 
     // Return numerical code for colors
     function colorToNumber(colorName) {
-        switch (colorName) {
-            case 'blue':
-                return 0;
-            case 'green':
-                return 1;
-            case 'red':
-                return 2;
-            default:
-                return -1;
-        }
+        return colors.indexOf(colorName);
     }
 
     // Return random index of given array, or -1 if array is empty or invalid
@@ -230,7 +221,7 @@
         var stim ={
             type: 'html-keyboard-response',
             stimulus: text,
-            choices:['a','w','d'],
+            choices:keys,
             trial_duration:1750,
             response_ends_trial: false,
             // cond + wordIndex is unique word identifier
@@ -320,7 +311,7 @@
         let stim ={
             type: 'html-keyboard-response',
             stimulus: text,
-            choices:['a','w','d'],
+            choices:keys,
             trial_duration:1750,
             response_ends_trial: false,
             // cond + wordIndex is unique word identifier
@@ -372,7 +363,7 @@
         let stim ={
             type: 'html-keyboard-response',
             stimulus: text,
-            choices:['a','w','d'],
+            choices:keys,
             trial_duration:1750,
             response_ends_trial: false,
             // cond + wordIndex is unique word identifier
