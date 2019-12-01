@@ -156,13 +156,6 @@
         response_ends_trial: true
     };
 
-    // Message after experiment ends
-    let endMsg = {
-        type: 'html-keyboard-response',
-        stimulus: 'Ende, drücke eine beliebige Taste um die Ergebnisse anzuzeigen',
-        response_ends_trial: true,
-    };
-
     // Feedback text
     let feedback = {
         type: 'html-keyboard-response',
@@ -343,12 +336,30 @@
     };
     testTimeline.push(testTrials);
 
+    /**
+     * Debrief block setup, contains some info on participant performance
+     */
+    let debrief = {
+        type: "html-keyboard-response",
+        stimulus: function() {
+
+            let trials = jsPsych.data.get().filter({test_part: 'main'});
+            let correctTrials = trials.filter({v_correct: 1});
+            let accuracy = Math.round(correctTrials.count() / trials.count() * 100);
+            let reactionTime = Math.round(correctTrials.select('rt').mean());
+
+            return "<p>Deine Genauigkeit war "+accuracy+"%.</p>"+
+                "<p>Deine durchschnittliche Reaktionszeit war "+reactionTime+"ms.</p>"+
+                "<p>Drücke eine beliebige Taste um die Ergebnisse anzuzeigen.</p>"+
+                "<p>Vielen Dank für die Teilnahme!</p>"
+        }
+    };
 
     /**
      * Merge timelines into one
      */
     let mainTimeline = [ids].concat(welcome, colorTutorialTl, testStartMsg, testTimeline,
-        mainStartMsg, experimentTimeline, endMsg);
+        mainStartMsg, experimentTimeline, debrief);
 
     /**
      * Start jsPsych
