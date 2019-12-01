@@ -22,63 +22,84 @@
         return colors.indexOf(colorName);
     }
 
-    // Return random index of given array, or -1 if array is empty or invalid
-    function getRandomIndex(array) {
-        if (Array.isArray(array) && array.length > 0) {
-            return Math.round(Math.random() * (array.length-1));
-        } else {
+    // Returns the expected response key to a given word color, -1 for invalid colors
+    function getExpectedResponse(color) {
+        let index = colors.indexOf(color);
+        if (index < 0 || index > keys.length-1) {
             return -1;
-        }
-    }
-
-    // Returns true if given key matches given color number, false if it doesn't.
-    function isCorrectKeyInput(pressedKey, colNum) {
-        pressedKey = jsPsych.pluginAPI.convertKeyCodeToKeyCharacter(pressedKey);
-        if (colNum > keys.length) {
-            return false;
         } else {
-            return (pressedKey == keys[colNum]);
+            return keys[index];
         }
     }
 
-
+    /**
+     * Colors to be used
+     */
     const colors = [
         'blue',
         'green',
         'red'
     ];
 
+    /**
+     * Expected keys, keys[n] is expected for colors[n]
+     */
     const keys = [
       'a',
       'w',
       'd'
     ];
 
+    /**
+     * Localized color names, colorNames[n] is displayed name for colors[n]
+     */
     const colorNames = [
       'blau',
       'grün',
       'rot'
     ];
 
+    /**
+     * Time duration for fixation row in ms, randomly chosen for each trial if multiple values are given
+     */
+    const fixationDurations = [ 500 ];
+
+    /**
+     * Time duration for trials in ms
+     */
+    const trialDuration = 1750;
+
+    /**
+     * Neutral words to be used in experiment
+     */
     const neutralWords = [ 'Papier', 'Haus', 'Anker', 'Stuhl', 'Fahrzeug', 'Pflanze', 'Stein', 'Lampe', 'Schrank',
         'Tür', 'Straße', 'Stadt', 'Flasche', 'Schal', 'Schuhe', 'Fenster'];
 
+    /**
+     * Emotional words to be used in experiment
+     */
     const emotionalWords = [ 'Mord', 'Krieg', 'Tod', 'Grab', 'Schulden', 'Stress', 'Ekel', 'Prüfung', 'Diebstahl',
         'Zerstörung', 'Kälte', 'Panik', 'Hunger', 'Ebola', 'Bombe', 'Krankheit'];
 
+    /**
+     * Neutral words to be used in test phase
+     */
     const neutralTestWords = ['Tuch', 'Würfel', 'Glas', 'Stift'];
 
+    /**
+     * Emotional words to be used in test phase
+     */
     const emotionalTestWords = ['Unfall', 'Trauer', 'Verspätung', 'Unglück'];
 
-    var d = new Date();
+    let d = new Date();
 
-    var t_date = d.toLocaleDateString();
-    var t_time = d.toLocaleTimeString();
+    let t_date = d.toLocaleDateString();
+    let t_time = d.toLocaleTimeString();
 
-    var part_id='';
-    var exp_id='';
+    let part_id='';
+    let exp_id='';
 
-    var ids  = {
+    let ids  = {
         type: 'survey-text',
         questions: [{prompt: "Participant ID"}, {prompt: "Experimenter ID"}],
         on_finish: function(data) {
@@ -87,8 +108,8 @@
         }
     };
 
-
-    var welcome = {
+    // Welcome message
+    let welcome = {
         type: 'html-keyboard-response',
         stimulus: function() {
             let text = '<p>Willkommen bei unserem Experiment.</p>';
@@ -96,10 +117,11 @@
             text += '<p>Drücke eine beliebige Taste um die Einführung zu starten...</p>';
             return text;
         },
-        response_ends_trial: true,
+        response_ends_trial: true
     };
 
-    var testStartMsg = {
+    // Message before test phase starts. Dynamically loads colors, keys and colorNames
+    let testStartMsg = {
         type: 'html-keyboard-response',
         stimulus: function() {
             let numTestTrials = neutralTestWords.length + emotionalTestWords.length;
@@ -115,7 +137,8 @@
         response_ends_trial: true
     };
 
-    var mainStartMsg = {
+    // Message before experiment starts. Dynamically loads colors, keys and colorNames
+    let mainStartMsg = {
         type: 'html-keyboard-response',
         stimulus: function() {
             let numTrials = neutralWords.length + emotionalWords.length;
@@ -133,142 +156,114 @@
         response_ends_trial: true
     };
 
-    var endMsg = {
+    // Message after experiment ends
+    let endMsg = {
         type: 'html-keyboard-response',
         stimulus: 'Ende, drücke eine beliebige Taste um die Ergebnisse anzuzeigen',
         response_ends_trial: true,
     };
 
-    var feedback = {
+    // Feedback text
+    let feedback = {
         type: 'html-keyboard-response',
         trial_duration: 4000,
         response_ends_trial: false,
         stimulus: '<p><b>=== Falsche Taste gedrückt === </b></p>',
     };
 
-    var fixation = {
-        type: 'html-keyboard-response',
-        trial_duration:500,
-        response_ends_trial: false,
-        stimulus: 'xxxxx',
+    // Displays feedback text only if last input was not correct
+    let conditionalFeedback = {
+        timeline: [feedback],
+        conditional_function: function(){
+            let data = jsPsych.data.get().last(1).values()[0];
+            return !(data.v_correct == 1);
+        }
     };
 
-    var maintl=[];
-
-    // Initialize arrays for unused word indexes
-    var unusedNeutralIndexes = [];
-    for(i = 0; i < neutralWords.length; i++) {
-        unusedNeutralIndexes.push(i);
-    }
-    var unusedEmotionalIndexes = [];
-    for(i = 0; i < emotionalWords.length; i++) {
-        unusedEmotionalIndexes.push(i);
-    }
+    // Fixation row, display duration taken from fixationDurations
+    let fixation = {
+        type: 'html-keyboard-response',
+        response_ends_trial: false,
+        stimulus: 'xxxxx',
+        trial_duration: function(){
+            // Picks random entry of fixationDurations
+            return jsPsych.randomization.sampleWithReplacement(fixationDurations, 1)[0];
+        },
+        data: {test_part: 'fixation'}
+    };
 
     /**
-     * Main timeline setup
-     * This creates a [fixation, stim, feedback] block for each word in a random color and pushes them on the timeline.
-     * It uses an array of used word-indexes to randomly select words without duplicates,
-     * while saving the used words indexes in the const word array.
+     * Experiment timeline setup
+     * This creates a [fixation, stim, conditionalFeedback] block for each word.
      */
-    while ((unusedNeutralIndexes.length + unusedEmotionalIndexes.length) > 0) {
-        //Select cond (emotional = 1, neutral = 2)
-        var cond = 0;
-        if(unusedNeutralIndexes.length == 0) {
-            // If all neutral words were used up, use emotional
-            cond = 1;
-        } else if(unusedEmotionalIndexes.length == 0) {
-            // If all emotional words were used up, use neutral
-            cond = 2;
-        } else {
-            // If neither are used up, randomly assign 1 or 2
-            cond = Math.round(Math.random()+1)
-        }
+    let experimentTimeline = [];
 
-        // Select word
-        var word;
-        var wordIndex;
-
-        let randomNumber;
-        switch (cond) {
-            case 1:
-                //Get and remove random emotional word index
-                randomNumber = getRandomIndex(unusedEmotionalIndexes);
-                wordIndex = unusedEmotionalIndexes[randomNumber];
-                unusedEmotionalIndexes.splice(randomNumber, 1);
-                // Get word for chosen index
-                word = emotionalWords[wordIndex];
-                break;
-            case 2:
-                // Get and remove random neutral word index
-                randomNumber = getRandomIndex(unusedNeutralIndexes);
-                wordIndex = unusedNeutralIndexes[randomNumber];
-                unusedNeutralIndexes.splice(randomNumber, 1);
-                // Get word for chosen index
-                word = neutralWords[wordIndex];
-                break;
-            default:
-                // Optional error handling
-                wordIndex = -1;
-                word = 'oops';
-                break;
-        }
-
-        // Select random color
-        var color = colors[getRandomIndex(colors)];
-
-        var text='<span style="color:'+color+'">'+word+'</span>';
-        var stim ={
-            type: 'html-keyboard-response',
-            stimulus: text,
-            choices:keys,
-            trial_duration:1750,
-            response_ends_trial: false,
-            // cond + wordIndex is unique word identifier
-            data: {
-                v_cond: cond,
-                v_wordnum: wordIndex,
-                v_colnum: colorToNumber(color),
-                v_correct: -999
-            },
-            on_finish: function(data) {
-                pressed=data['key_press'];
-                colnum=data['v_colnum'];
-                if (pressed!=null) {
-                    if (isCorrectKeyInput(pressed, colnum))  {
-                        data['v_correct']=1;
-                        jsPsych.endCurrentTimeline();
-                    } else {
-                        data['v_correct']=0;
-                    }
-                } else {
-                    data['v_correct']=-999;
-                    data['key_press']=-999;
-                }
-            }
-        };
-
-        var subtl = {
-            timeline: [fixation, stim, feedback]
-        };
-
-        maintl.push(subtl);
+    // Data object for experiment stimuli, later loaded in via timeline_variables
+    let experimentStimuli = [];
+    for (let i = 0; i < emotionalWords.length; i++) {
+        let color = colors[i % colors.length];
+        let data = {test_part: 'main', expected_response: getExpectedResponse(color), v_cond: 1, v_wordNum: i,
+            v_colNum: colorToNumber(color), v_correct: -999};
+        experimentStimuli.push({ word: emotionalWords[i], color: color, data: data});
     }
+    for (let i = 0; i < neutralWords.length; i++) {
+        let color = colors[i % colors.length];
+        let data = {test_part: 'main', expected_response: getExpectedResponse(color), v_cond: 2, v_wordNum: i,
+            v_colNum: colorToNumber(color), v_correct: -999};
+        experimentStimuli.push({ word: neutralWords[i], color: color, data: data});
+    }
+
+    // One experiment trial object
+    let experimentTrial = {
+        type: "html-keyboard-response",
+        stimulus: function() {
+            text = '<span style="color:';
+            text += jsPsych.timelineVariable('color', true);
+            text += '">';
+            text += jsPsych.timelineVariable('word', true);
+            text += '</span>';
+            return text;
+        },
+        choices: keys,
+        trial_duration:1750,
+        response_ends_trial: false,
+        data: jsPsych.timelineVariable('data'),
+        on_finish: function(data){
+            if (data.key_press == null) {
+                data.v_correct = -999;
+                data.key_press = -999;
+            } else if (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode(data.expected_response)) {
+                data.v_correct = 1;
+            } else {
+                data.v_correct = 0;
+            }
+        },
+    };
+
+    // Main experimentTrials object, contains many experimentTrail objects with different experimentStimuli data
+    let experimentTrials = {
+        timeline: [fixation, experimentTrial, conditionalFeedback],
+        timeline_variables: experimentStimuli,
+        randomize_order: true
+    };
+    experimentTimeline.push(experimentTrials);
 
     /**
      * Test timeline setup.
-     * Dynamically creates objects depending on fields colorNames[], colors[] and keys[].
+     * Dynamically creates tutorial objects depending on fields colorNames[], colors[] and keys[].
      * Adds a short tutorial, checking if all required buttons are working.
-     * Then creates [fixation, stimulus, feedback] block for each test word in a random color.
+     * Then creates [fixation, stimulus, conditionalFeedback] block for each test word.
      */
-    var testtl = [];
-    var colorTutorialTl = [];
-
+    /*
+    * Color tutorial setup
+    */
+    let colorTutorialTl = [];
     // Dynamically adds colors, names and keys as variables
     let tutorialVariables = [];
     for (let i = 0; i < colors.length; i++) {
         tutorialVariables.push( { colorName: colorNames[i], color: colors[i], key: keys[i] });
     }
+
     let colorTutorial = {
         timeline: [
             {
@@ -293,119 +288,72 @@
 
     colorTutorialTl.push(colorTutorial);
 
-    /**
-     * Adds emotional test words to the test timeline.
+    /*
+    * Main test timeline setup
      */
+    let testTimeline = [];
+    // Load test stimuli into timeline_variable array
+    let testStimuli = [];
     for (let i = 0; i < emotionalTestWords.length; i++) {
-        //Set condition (1 = emotional)
-        let cond = 1;
+        let color = colors[i % colors.length];
+        let data = {test_part: 'test', expected_response: getExpectedResponse(color), v_cond: 1, v_wordNum: i,
+            v_colNum: colorToNumber(color), v_correct: -999};
 
-        // Select word
-        let word = emotionalTestWords[i];
-        let wordIndex = i;
-
-        // Select random color
-        let color = colors[getRandomIndex(colors)];
-
-        let text='<span style="color:'+color+'">'+word+'</span>';
-        let stim ={
-            type: 'html-keyboard-response',
-            stimulus: text,
-            choices:keys,
-            trial_duration:1750,
-            response_ends_trial: false,
-            // cond + wordIndex is unique word identifier
-            data: {
-                v_cond: cond,
-                v_wordnum: wordIndex,
-                v_colnum: colorToNumber(color),
-                v_correct: -999
-            },
-            on_finish: function(data) {
-                pressed=data['key_press'];
-                colnum=data['v_colnum'];
-                if (pressed!=null) {
-                    if (isCorrectKeyInput(pressed, colnum))  {
-                        data['v_correct']=1;
-                        jsPsych.endCurrentTimeline();
-                    } else {
-                        data['v_correct']=0;
-                    }
-                } else {
-                    data['v_correct']=-999;
-                    data['key_press']=-999;
-                }
-            }
-        };
-
-        let subtl = {
-            timeline: [fixation, stim, feedback]
-        };
-
-        testtl.push(subtl);
+        testStimuli.push({ word: emotionalTestWords[i], color: color, data: data});
     }
+    for (let i = 0; i < neutralTestWords.length; i++) {
+        let color = colors[i % colors.length];
+        let data = {test_part: 'test', expected_response: getExpectedResponse(color), v_cond: 2, v_wordNum: i,
+            v_colNum: colorToNumber(color), v_correct: -999};
+        testStimuli.push({ word: neutralTestWords[i], color: color, data: data});
+    }
+
+    let testTrial = {
+        type: "html-keyboard-response",
+        stimulus: function() {
+            text = '<span style="color:';
+            text += jsPsych.timelineVariable('color', true);
+            text += '">';
+            text += jsPsych.timelineVariable('word', true);
+            text += '</span>';
+            return text;
+        },
+        choices: keys,
+        trial_duration:1750,
+        response_ends_trial: false,
+        data: jsPsych.timelineVariable('data'),
+        on_finish: function(data){
+            if (data.key_press == null) {
+                data.v_correct = -999;
+                data.key_press = -999;
+            } else if (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode(data.expected_response)) {
+                data.v_correct = 1;
+            } else {
+                data.v_correct = 0;
+            }
+        },
+    };
+
+    // Main testTrials object
+    let testTrials = {
+        timeline: [fixation, testTrial, conditionalFeedback],
+        timeline_variables: testStimuli,
+        randomize_order: true
+    };
+    testTimeline.push(testTrials);
+
 
     /**
-     * Adds neutral words to test timeline.
+     * Merge timelines into one
      */
-    for (let i = 0; i < neutralTestWords.length; i++) {
-        //Set condition (2 = neutral)
-        let cond = 2;
+    let mainTimeline = [ids].concat(welcome, colorTutorialTl, testStartMsg, testTimeline,
+        mainStartMsg, experimentTimeline, endMsg);
 
-        // Select word
-        let word = neutralTestWords[i];
-        let wordIndex = i;
-
-        // Select random color
-        let color = colors[getRandomIndex(colors)];
-
-        let text='<span style="color:'+color+'">'+word+'</span>';
-        let stim ={
-            type: 'html-keyboard-response',
-            stimulus: text,
-            choices:keys,
-            trial_duration:1750,
-            response_ends_trial: false,
-            // cond + wordIndex is unique word identifier
-            data: {
-                v_cond: cond,
-                v_wordnum: wordIndex,
-                v_colnum: colorToNumber(color),
-                v_correct: -999
-            },
-            on_finish: function(data) {
-                pressed=data['key_press'];
-                colnum=data['v_colnum'];
-                if (pressed!=null) {
-                    if (isCorrectKeyInput(pressed, colnum))  {
-                        data['v_correct']=1;
-                        jsPsych.endCurrentTimeline();
-                    } else {
-                        data['v_correct']=0;
-                    }
-                } else {
-                    data['v_correct']=-999;
-                    data['key_press']=-999;
-                }
-            }
-        };
-
-        let subtl = {
-            timeline: [fixation, stim, feedback]
-        };
-
-        testtl.push(subtl);
-    }
-
-    maintl = jsPsych.randomization.shuffle(maintl);
-
-    testtl = jsPsych.randomization.shuffle(testtl);
-
-    maintl = [ids].concat(welcome, colorTutorialTl, testStartMsg, testtl, mainStartMsg,  maintl, endMsg);
-
-
+    /**
+     * Start jsPsych
+     */
     jsPsych.init({
-        timeline: maintl,
+        timeline: mainTimeline,
         on_finish: function() {
             jsPsych.data.addProperties({
                 id: part_id,
