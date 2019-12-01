@@ -169,6 +169,7 @@
         trial_duration: 4000,
         response_ends_trial: false,
         stimulus: '<p><b>=== Falsche Taste gedrückt === </b></p>',
+        data: {test_part: 'feedback'}
     };
 
     // Displays feedback text only if last input was not correct
@@ -225,7 +226,7 @@
             return text;
         },
         choices: keys,
-        trial_duration:1750,
+        trial_duration: trialDuration,
         response_ends_trial: false,
         data: jsPsych.timelineVariable('data'),
         on_finish: function(data){
@@ -311,7 +312,7 @@
     let testTrial = {
         type: "html-keyboard-response",
         stimulus: function() {
-            text = '<span style="color:';
+            let text = '<span style="color:';
             text += jsPsych.timelineVariable('color', true);
             text += '">';
             text += jsPsych.timelineVariable('word', true);
@@ -319,7 +320,7 @@
             return text;
         },
         choices: keys,
-        trial_duration:1750,
+        trial_duration: trialDuration,
         response_ends_trial: false,
         data: jsPsych.timelineVariable('data'),
         on_finish: function(data){
