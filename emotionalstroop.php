@@ -112,9 +112,9 @@
     let welcome = {
         type: 'html-keyboard-response',
         stimulus: function() {
-            let text = '<p>Willkommen bei unserem Experiment.</p>';
+            let text = '<p>Willkommen bei unserem Stroop-Experiment.</p>';
             text += '<p>Wir werden deine Reaktionszeiten auf Wörter in verschiedenen Farben testen.</p>';
-            text += '<p>Drücke eine beliebige Taste um die Einführung zu starten...</p>';
+            text += '<p>Drücke nun eine beliebige Taste um die Einführung zu starten...</p>';
             return text;
         },
         response_ends_trial: true
@@ -127,11 +127,11 @@
             let numTestTrials = neutralTestWords.length + emotionalTestWords.length;
             let text = '<p> Nun werden dir ' + numTestTrials + ' Wörter in verschiedenen Farben angezeigt.</p>';
             text += '<p>Dies ist nur die Aufwärmrunde.</p>';
-            text += '<p>Versuche so schnell wie möglich die richtige Taste zu drücken. Zur Erinnerung:</p>';
+            text += '<p>Versuche so schnell wie möglich, die richtige Taste zu drücken. Zur Erinnerung:</p>';
             for (let i = 0; i < colors.length; i++) {
                 text += '<p style="color:' + colors[i] + '">' + colorNames[i] + 'es Wort: Drücke ' + keys[i].toUpperCase();
             }
-            text += '<p>Drücke beliebige Taste um den Testdurchlauf zu starten...</p>';
+            text += '<p>Drücke eine beliebige Taste, um den Testdurchlauf zu starten...</p>';
             return text;
         },
         response_ends_trial: true
@@ -144,13 +144,13 @@
             let numTrials = neutralWords.length + emotionalWords.length;
             let text = '<p> Nun kommen wir zum wirklichen Experiment.</p>';
             text += '<p> Dir werden ' + numTrials + ' Wörter in verschiedenen Farben angezeigt.</p>';
-            text += '<p>Versuche so schnell wie möglich die richtige Taste zu drücken. Zur Erinnerung:</p>';
+            text += '<p>Versuche so schnell wie möglich, die richtige Taste zu drücken. Zur Erinnerung:</p>';
             for (let i = 0; i < colors.length; i++) {
-                text += '<p style="color:' + colors[i] + '">' + colorNames[i] + 'es Wort: Drücke ' + keys[i].toUpperCase();
+                text += '<p style="color:' + colors[i] + '">' + colorNames[i] + 'es Wort: Drücke ' + keys[i].toUpperCase() + '</p>';
             }
             text += '<p>Nur dein erster Tastendruck pro Wort zählt.</p>';
-            text += '<p>Versuche so wenige Fehler wie möglich zu machen.</p>';
-            text += '<p>Drücke beliebige Taste um das Experiment zu starten...</p>';
+            text += '<p>Versuche, so wenige Fehler wie möglich zu machen.</p>';
+            text += '<p>Drücke nun eine beliebige Taste um das Experiment zu starten...</p>';
             return text;
         },
         response_ends_trial: true
