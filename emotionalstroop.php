@@ -195,7 +195,7 @@
     // Data object for experiment stimuli, later loaded in via timeline_variables
     let experimentStimuli = [];
     for (let i = 0; i < emotionalWords.length; i++) {
-        let color = colors[i % colors.length];
+        let color = colors[(i+1) % colors.length];
         let data = {test_part: 'main', expected_response: getExpectedResponse(color), v_cond: 1, v_wordNum: i,
             v_colNum: colorToNumber(color), v_correct: -999};
         experimentStimuli.push({ word: emotionalWords[i], color: color, data: data});
@@ -211,7 +211,7 @@
     let experimentTrial = {
         type: "html-keyboard-response",
         stimulus: function() {
-            text = '<span style="color:';
+            let text = '<span style="color:';
             text += jsPsych.timelineVariable('color', true);
             text += '">';
             text += jsPsych.timelineVariable('word', true);
