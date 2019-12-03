@@ -38,7 +38,7 @@
     const colors = [
         'blue',
         'green',
-        'red'
+        'purple'
     ];
 
     /**
@@ -56,7 +56,7 @@
     const colorNames = [
       'blau',
       'grün',
-      'rot'
+      'lilan'
     ];
 
     /**
@@ -378,7 +378,7 @@
                 function(x){
                     return (x['v_cond'] == 1 || x['v_cond'] == 2)
                 }).csv();
-            saveData('data-'+ part_id + '.csv', expData);
+            saveData('data-'+ part_id, expData);
         }
     });
 
