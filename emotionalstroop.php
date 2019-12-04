@@ -130,7 +130,7 @@
         type: 'html-keyboard-response',
         stimulus: function() {
             let numTestTrials = neutralTestWords.length + emotionalTestWords.length;
-            let text = '<p>Bevor das Experiment losgeht, gibt es eine kleine Auswärmrunde:</p>'
+            let text = '<p>Bevor das Experiment losgeht, gibt es eine kleine Auswärmrunde:</p>';
             text += '<p>Dir werden nun ' + numTestTrials + ' Wörter in verschiedenen Farben angezeigt.</p>';
 
             text += '<p>Versuche so schnell wie möglich, die richtige Taste zu drücken. Zur Erinnerung:</p>';
