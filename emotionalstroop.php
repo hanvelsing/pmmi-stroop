@@ -17,6 +17,11 @@
         xhr.send(JSON.stringify({filename: name, filedata: data}));
     }
 
+    // Random sorting function for Array.sort
+    function randomSort(a, b) {
+        return 0.5 - Math.random();
+    }
+
     // Return numerical code for colors
     function colorToNumber(colorName) {
         return colors.indexOf(colorName);
@@ -73,13 +78,13 @@
      * Neutral words to be used in experiment
      */
     const neutralWords = [ 'Papier', 'Haus', 'Anker', 'Stuhl', 'Fahrzeug', 'Pflanze', 'Stein', 'Lampe', 'Schrank',
-        'Tür', 'Straße', 'Stadt', 'Flasche', 'Schal', 'Schuhe', 'Fenster'];
+        'Tür', 'Straße', 'Stadt', 'Flasche', 'Schal', 'Schuhe', 'Fenster'].sort(randomSort);
 
     /**
      * Emotional words to be used in experiment
      */
     const emotionalWords = [ 'Mord', 'Krieg', 'Tod', 'Grab', 'Schulden', 'Stress', 'Ekel', 'Prüfung', 'Diebstahl',
-        'Zerstörung', 'Kälte', 'Panik', 'Hunger', 'Ebola', 'Bombe', 'Krankheit'];
+        'Zerstörung', 'Kälte', 'Panik', 'Hunger', 'Ebola', 'Bombe', 'Krankheit'].sort(randomSort);
 
     /**
      * Neutral words to be used in test phase
