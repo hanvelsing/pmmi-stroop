@@ -162,21 +162,37 @@
         response_ends_trial: true
     };
 
-    // Feedback text
-    let feedback = {
-        type: 'html-keyboard-response',
-        trial_duration: 4000,
-        response_ends_trial: false,
-        stimulus: '<p><b>=== Falsche Taste gedrückt === </b></p>',
-        data: {test_part: 'feedback'}
-    };
-
-    // Displays feedback text only if last input was not correct
-    let conditionalFeedback = {
-        timeline: [feedback],
+    // Displays feedback text only if last input was incorrect
+    let wrongButtonFeedback = {
+        timeline: [
+            {
+                type: 'html-keyboard-response',
+                trial_duration: 4000,
+                response_ends_trial: false,
+                stimulus: '<p><b>=== Falsche Taste gedrückt === </b></p>',
+                data: {test_part: 'feedback'}
+            }
+        ],
         conditional_function: function(){
             let data = jsPsych.data.get().last(1).values()[0];
-            return !(data.v_correct == 1);
+            return (data.v_correct == 0);
+        }
+    };
+
+    // Displays feedback text only if last input was missing
+    let noInputFeedback = {
+        timeline: [
+            {
+                type: 'html-keyboard-response',
+                trial_duration: 4000,
+                response_ends_trial: false,
+                stimulus: '<p><b>=== Keine Taste gedrückt. Bitte entscheide dich schneller === </b></p>',
+                data: {test_part: 'feedback'}
+            }
+        ],
+        conditional_function: function(){
+            let data = jsPsych.data.get().last(1).values()[0];
+            return (data.v_correct == -999);
         }
     };
 
@@ -242,7 +258,7 @@
 
     // Main experimentTrials object, contains many experimentTrail objects with different experimentStimuli data
     let experimentTrials = {
-        timeline: [fixation, experimentTrial, conditionalFeedback],
+        timeline: [fixation, experimentTrial, wrongButtonFeedback, noInputFeedback],
         timeline_variables: experimentStimuli,
         randomize_order: true
     };
@@ -336,7 +352,7 @@
 
     // Main testTrials object
     let testTrials = {
-        timeline: [fixation, testTrial, conditionalFeedback],
+        timeline: [fixation, testTrial, wrongButtonFeedback, noInputFeedback],
         timeline_variables: testStimuli,
         randomize_order: true
     };
