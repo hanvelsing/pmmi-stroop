@@ -56,7 +56,7 @@
     const colorNames = [
       'blau',
       'grün',
-      'lilan'
+      'lilafarben'
     ];
 
     /**
@@ -125,11 +125,12 @@
         type: 'html-keyboard-response',
         stimulus: function() {
             let numTestTrials = neutralTestWords.length + emotionalTestWords.length;
-            let text = '<p> Nun werden dir ' + numTestTrials + ' Wörter in verschiedenen Farben angezeigt.</p>';
-            text += '<p>Dies ist nur die Aufwärmrunde.</p>';
+            let text = '<p>Bevor das Experiment losgeht, gibt es eine kleine Auswärmrunde:</p>'
+            text += '<p>Dir werden nun ' + numTestTrials + ' Wörter in verschiedenen Farben angezeigt.</p>';
+
             text += '<p>Versuche so schnell wie möglich, die richtige Taste zu drücken. Zur Erinnerung:</p>';
             for (let i = 0; i < colors.length; i++) {
-                text += '<p style="color:' + colors[i] + '">' + colorNames[i] + 'es Wort: Drücke ' + keys[i].toUpperCase();
+                text += '<p style="color:' + colors[i] + '">' + colorNames[i] + 'es Wort: Drücke die Taste <strong>'+ keys[i].toUpperCase() + '</strong>';
             }
             text += '<p>Drücke eine beliebige Taste, um den Testdurchlauf zu starten...</p>';
             return text;
@@ -146,7 +147,7 @@
             text += '<p> Dir werden ' + numTrials + ' Wörter in verschiedenen Farben angezeigt.</p>';
             text += '<p>Versuche so schnell wie möglich, die richtige Taste zu drücken. Zur Erinnerung:</p>';
             for (let i = 0; i < colors.length; i++) {
-                text += '<p style="color:' + colors[i] + '">' + colorNames[i] + 'es Wort: Drücke ' + keys[i].toUpperCase() + '</p>';
+                text += '<p style="color:' + colors[i] + '">' + colorNames[i] + 'es Wort: Drücke <strong>'+ keys[i].toUpperCase() + '</strong></p>';
             }
             text += '<p>Nur dein erster Tastendruck pro Wort zählt.</p>';
             text += '<p>Versuche, so wenige Fehler wie möglich zu machen.</p>';
